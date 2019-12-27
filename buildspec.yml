@@ -16,5 +16,5 @@ phases:
     commands:
       - echo Build completed on `date`
       - echo Starting deployment
-      - zappa update dev
+      - zappa update
       - echo Deployment completed
