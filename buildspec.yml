@@ -1,0 +1,21 @@
+version: 0.2
+
+
+    phases:
+      install:
+        commands:
+          - echo setting up python env
+          - pip install pipenv
+          - pipenv --three
+          - pipenv shell
+          - pipenv install
+      build:
+        commands:
+          - echo Build started on `date`
+          - echo Building and running tests
+      post_build:
+        commands:
+          - echo Build completed on `date`
+          - echo Starting deployment
+          - zappa update dev
+          - echo Deployment completed
