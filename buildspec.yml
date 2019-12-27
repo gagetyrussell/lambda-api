@@ -3,7 +3,7 @@ version: 0.2
 phases:
   install:
     runtime-versions:
-      docker: 18
+      python: 3
     commands:
       - echo setting up python env
       - pip install pipenv
