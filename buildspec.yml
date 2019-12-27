@@ -6,7 +6,9 @@ phases:
       python: 3.7
     commands:
       - echo setting up python env
+      - pip install --upgrade pip
       - pip install pipenv
+      - pipenv --help
       - pipenv install
   build:
     commands:
