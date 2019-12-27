@@ -17,5 +17,5 @@ phases:
       - echo Build completed on `date`
       - ls
       - echo Starting deployment
-      - pipenv run zappa update dev
+      - zappa update dev
       - echo Deployment completed
