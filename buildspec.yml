@@ -12,10 +12,11 @@ phases:
     commands:
       - echo Build started on `date`
       - echo Building and running tests
+      - pip install zappa
+      - zappa update dev
   post_build:
     commands:
       - echo Build completed on `date`
       - ls
       - echo Starting deployment
-      - zappa update dev
       - echo Deployment completed
