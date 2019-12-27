@@ -8,6 +8,7 @@ phases:
       - echo setting up python env
       - pip install pipenv
       - pipenv install
+      - zappa init
   build:
     commands:
       - echo Build started on `date`
@@ -17,5 +18,5 @@ phases:
       - echo Build completed on `date`
       - ls
       - echo Starting deployment
-      - zappa update
+      - zappa update dev
       - echo Deployment completed
