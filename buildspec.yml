@@ -8,6 +8,7 @@ phases:
       - echo setting up python env
       - pip install pipenv
       - pipenv install
+      - pipenv shell
   build:
     commands:
       - echo Build started on `date`
