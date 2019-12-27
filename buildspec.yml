@@ -8,7 +8,6 @@ phases:
       - echo setting up python env
       - pip install pipenv
       - pipenv install
-      - zappa init
   build:
     commands:
       - echo Build started on `date`
