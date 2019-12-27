@@ -7,9 +7,7 @@ phases:
     commands:
       - echo setting up python env
       - pip install --upgrade pip
-      - pip install pipenv
-      - pipenv --help
-      - pipenv install
+      - pip3 install -r requirements.txt
   build:
     commands:
       - echo Build started on `date`
