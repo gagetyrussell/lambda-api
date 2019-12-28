@@ -67,7 +67,7 @@ def user():
         items = []
         try:
             with conn.cursor() as cur:
-                cur.execute("select * from User")
+                cur.execute("select * from metadb.users")
                 for row in cur:
                     items.append(row)
                 conn.commit()
