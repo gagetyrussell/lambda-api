@@ -12,6 +12,7 @@ zappa = "*"
 flask = "*"
 python-dotenv = "*"
 pandas = "*"
+PyMySQL = "*"
 
 [requires]
 python_version = "3.7"

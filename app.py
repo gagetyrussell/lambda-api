@@ -4,6 +4,9 @@ from flask import Flask, Response, json, request
 import os
 import logging
 from dotenv import load_dotenv, find_dotenv
+import pymysql
+from uuid import uuid5, uuid1
+
 
 # first, load your env file, replacing the path here with your own if it differs
 # when using the local database make sure you change your path  to .dev.env, it should work smoothly.
@@ -22,7 +25,7 @@ logger.setLevel(logging.INFO)
 def connect():
     try:
         cursor = pymysql.cursors.DictCursor
-        conn = pymysql.connect(RDS_HOST, user=NAME, passwd=PASSWORD, db=DB_NAME, port=RDS_PORT, cursorclass=cursor, connect_timeout=5)
+        conn = pymysql.connect(RDS_HOST, user=NAME, passwd=PASSWORD, port=RDS_PORT, cursorclass=cursor, connect_timeout=5)
         logger.info("SUCCESS: connection to RDS successful")
         return(conn)
     except Exception as e:
@@ -33,11 +36,10 @@ def build_response(resp_dict, status_code):
     return response
 
 def insert(data):
-    uniq_id = (uuid5(uuid1(), (uuid1())))
-    query = """insert into metadb.users (ID, first_name, last_name, email)
-            values(%s, %s, %s, %s)
+    query = """insert into metadb.users (first_name, last_name, email)
+            values(%s, %s, %s)
             """
-    return (query, (uniq_id, data["first_name"], data["last_name"], data["email"]))
+    return (query, (data["first_name"], data["last_name"], data["email"]))
 
 def validate(data):
     error_fields = []
@@ -81,9 +83,9 @@ def user():
         return response
     if request.method == "POST":
         data = {
-            "first_name": request.form.get("first_name", ""),
-            "last_name": request.form.get("last_name", ""),
-            "email": request.form.get("email", "")
+            "first_name": request.form.get('first_name'),
+            "last_name": request.form.get('last_name'),
+            "email": request.form.get('email')
         }
         valid, fields = validate(data)
         if not valid:
@@ -106,4 +108,4 @@ def user():
 # include this for local dev
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
