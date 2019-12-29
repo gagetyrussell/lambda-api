@@ -94,7 +94,7 @@ class MysqlDatabase:
 
             except Exception as e:
                 print(repr(sys.exc_info()))
-                if backoff <= Config.JP3_DB_MAX_BACKOFF:
+                if backoff <= 16:
                     log.warning("Connection attempt failed, retrying in %s", backoff,
                              extra={'db_hostname': hostname, 'db_username': username})
                     time.sleep(backoff)
