@@ -1,11 +1,10 @@
 {
     "dev": {
         "app_function": "app.app",
-        "aws_region": "eu-central-1",
+        "aws_region": "us-east-1",
         "profile_name": "default",
         "project_name": "api",
         "runtime": "python3.7",
-        "s3_bucket": "lambda_api"
-        "keep_warm": "false"
+        "s3_bucket": "gr.lambdaapi"
     }
 }
