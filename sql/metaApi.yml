@@ -1,0 +1,17 @@
+getUsers: |
+  select
+    *
+  from
+    metadb.users u
+
+createUser: |
+  INSERT INTO metadb.users (
+    first_name,
+    last_name,
+    email
+  )
+  VALUES (
+  '{{ first_name }}',
+  '{{ last_name }}',
+  '{{ email }}'
+  )

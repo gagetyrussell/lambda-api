@@ -1,10 +1,14 @@
 # app.py
 
-from flask import Flask, Response, json, request
+from flask import Flask, Response, json, request, make_response
 import os
 import logging
 from dotenv import load_dotenv, find_dotenv
 import pymysql
+from Mysql import MysqlDatabase
+from flask import json as flask_json
+
+db = MysqlDatabase()
 
 # first, load your env file, replacing the path here with your own if it differs
 # when using the local database make sure you change your path  to .dev.env, it should work smoothly.
@@ -19,6 +23,20 @@ DB_NAME = os.environ.get("DB_NAME")
 # we need to instantiate the logger
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
+
+def jsonResponse(obj, status=200, headers=None):
+    responseHeaders = headers or {}
+    responseHeaders.update({
+        "Content-type": "application/json"
+    })
+    data = flask_json.dumps(obj)
+
+    rsp = make_response(data, status)
+    for x in responseHeaders:
+        rsp.headers[x] = responseHeaders[x]
+
+    logger.debug("Response: %s" % repr(rsp))
+    return rsp
 
 def connect():
     try:
@@ -59,6 +77,24 @@ app = Flask(__name__)
 def index():
     connect()
     return "Hello World! Connected", 200
+
+@app.route('/getUsers', methods=["GET", "POST"])
+def getUsers():
+    rsp = db.SELECT('getUsers')
+    return jsonResponse(rsp)
+
+@app.route('/createUser', methods=["GET", "POST"])
+def createUser():
+
+    first_name = request.form.get('first_name')
+    print(first_name)
+    last_name = request.form.get('last_name')
+    print(last_name)
+    email = request.form.get('email')
+    print(email)
+
+    rsp = db.INSERT('createUser', {'first_name': first_name, 'last_name': last_name, 'email': email})
+    return jsonResponse(rsp)
 
 @app.route('/user', methods=["GET", "POST"])
 def user():
