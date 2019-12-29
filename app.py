@@ -5,8 +5,6 @@ import os
 import logging
 from dotenv import load_dotenv, find_dotenv
 import pymysql
-from uuid import uuid5, uuid1
-
 
 # first, load your env file, replacing the path here with your own if it differs
 # when using the local database make sure you change your path  to .dev.env, it should work smoothly.
