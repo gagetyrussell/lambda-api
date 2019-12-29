@@ -132,6 +132,11 @@ class MysqlDatabase:
         self.db.commit()
         return cur.lastrowid
 
+    def DELETE(self, *args, **kwargs):
+        cur, rv = self._execute(*args, **kwargs)
+        self.db.commit()
+        return cur.lastrowid
+
     def UPDATE(self, *args, **kwargs):
         cur, rv = self._execute(*args, **kwargs)
         self.db.commit()

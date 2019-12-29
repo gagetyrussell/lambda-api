@@ -10,7 +10,6 @@ awscli = "*"
 zappa = "*"
 flask = "*"
 python-dotenv = "*"
-PyMySQL = "*"
 pybars3 = "*"
 mysql-connector-python = "*"
 
