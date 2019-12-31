@@ -15,3 +15,17 @@ createUser: |
   '{{ last_name }}',
   '{{ email }}'
   )
+
+cognitoUserToRDS: |
+  INSERT INTO metadb.cognitoUsers (
+    email,
+    email_verified,
+    user_pool_id,
+    user_id
+  )
+  VALUES (
+  '{{ email }}',
+  '{{ email_verified }}',
+  '{{ user_pool_id }}',
+  '{{ user_id }}'
+  )

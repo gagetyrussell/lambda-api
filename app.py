@@ -6,6 +6,7 @@ import logging
 from dotenv import load_dotenv, find_dotenv
 
 from Mysql import MysqlDatabase
+from S3 import create_bucket, add_user_key
 from flask import json as flask_json
 from Util import Response, Validate
 
@@ -20,6 +21,8 @@ RDS_PORT = int(os.environ.get("DB_PORT", 3306))
 NAME = os.environ.get("DB_USERNAME")
 PASSWORD = os.environ.get("DB_PASSWORD")
 DB_NAME = os.environ.get("DB_NAME")
+PRIMARY_REGION = os.environ.get("PRIMARY_REGION")
+
 
 # we need to instantiate the logger
 logger = logging.getLogger()
@@ -47,6 +50,35 @@ def createUser():
 
     rsp = db.INSERT('createUser', data)
     return Response.jsonResponse(rsp)
+
+@app.route('/cognitoUserToRDS', methods=["POST"])
+def cognitoUserToRDS():
+    data = {
+        'email': request.form.get('email'),
+        'email_verified': request.form.get('email_verified'),
+        'user_pool_id': request.form.get('userPoolId'),
+        'user_id': request.form.get('userName'),
+    }
+    valid, fields = Validate.validateRequestData(data, required_fields=['email', 'email_verified', 'user_pool_id', 'user_id'])
+    if not valid:
+        error_fields = ', '.join(fields)
+        error_message = f"Data missing from these fields: {error_fields}"
+        return Response.jsonResponse({"status": "error", "message": error_message}, 400)
+
+    rsp = db.INSERT('cognitoUserToRDS', data)
+    return Response.jsonResponse(rsp)
+
+@app.route('/createCognitoUserBucket', methods=["POST"])
+def createCognitoUserBucket():
+    data = {
+        'email': request.form.get('email'),
+        'email_verified': request.form.get('email_verified'),
+        'user_pool_id': request.form.get('userPoolId'),
+        'user_id': request.form.get('userName'),
+    }
+    valid, fields = Validate.validateRequestData(data, required_fields=['email', 'email_verified', 'user_pool_id', 'user_id'])
+    creation = add_user_key(bucket_name="mgr.users.data", user_id=data['user_id'], metadata=data)
+    return str(creation)
 
 # include this for local dev
 
