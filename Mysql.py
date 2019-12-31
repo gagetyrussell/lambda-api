@@ -130,22 +130,26 @@ class MysqlDatabase:
     def INSERT(self, *args, **kwargs):
         cur, rv = self._execute(*args, **kwargs)
         self.db.commit()
+        self.db.close()
         return cur.lastrowid
 
     def DELETE(self, *args, **kwargs):
         cur, rv = self._execute(*args, **kwargs)
         self.db.commit()
+        self.db.close()
         return cur.lastrowid
 
     def UPDATE(self, *args, **kwargs):
         cur, rv = self._execute(*args, **kwargs)
         self.db.commit()
+        self.db.close()
         return cur.rowcount
 
     def SELECT(self, *args, **kwargs):
         cur, rv = self._execute(*args, **kwargs)
-        r = cur.fetchall();
-        self.db.commit();
+        r = cur.fetchall()
+        self.db.commit()
+        self.db.close()
         return r;
 
     def BOOLEAN(self, *args, **kwargs):

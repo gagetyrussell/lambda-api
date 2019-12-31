@@ -4,9 +4,10 @@ from flask import Flask, Response, json, request, make_response
 import os
 import logging
 from dotenv import load_dotenv, find_dotenv
+from datetime import datetime
 
 from Mysql import MysqlDatabase
-from S3 import create_bucket, add_user_key
+from S3 import create_bucket, add_user_key, create_presigned_post
 from flask import json as flask_json
 from Util import Response, Validate
 
@@ -56,10 +57,11 @@ def cognitoUserToRDS():
     data = {
         'email': request.form.get('email'),
         'email_verified': request.form.get('email_verified'),
+        'datestamp': request.form.get('datestamp'),
         'user_pool_id': request.form.get('userPoolId'),
         'user_id': request.form.get('userName'),
     }
-    valid, fields = Validate.validateRequestData(data, required_fields=['email', 'email_verified', 'user_pool_id', 'user_id'])
+    valid, fields = Validate.validateRequestData(data, required_fields=['email', 'email_verified', 'datestamp', 'user_pool_id', 'user_id'])
     if not valid:
         error_fields = ', '.join(fields)
         error_message = f"Data missing from these fields: {error_fields}"
@@ -68,17 +70,34 @@ def cognitoUserToRDS():
     rsp = db.INSERT('cognitoUserToRDS', data)
     return Response.jsonResponse(rsp)
 
-@app.route('/createCognitoUserBucket', methods=["POST"])
-def createCognitoUserBucket():
+@app.route('/createCognitoUserKey', methods=["POST"])
+def createCognitoUserKey():
     data = {
         'email': request.form.get('email'),
         'email_verified': request.form.get('email_verified'),
         'user_pool_id': request.form.get('userPoolId'),
-        'user_id': request.form.get('userName'),
+        'user_id': request.form.get('userName')
     }
     valid, fields = Validate.validateRequestData(data, required_fields=['email', 'email_verified', 'user_pool_id', 'user_id'])
-    creation = add_user_key(bucket_name="mgr.users.data", user_id=data['user_id'], metadata=data)
+    creation = add_user_key(bucket_name="mgr.users.data", user_id=data['user_id'])
     return str(creation)
+
+@app.route('/getPresignedUserDataUrl', methods=["GET"])
+def getPresignedUserDataUrl():
+    data = {
+    'user_id': request.args.get('user_id'),
+    'file_name': request.args.get('file_name')
+    }
+
+    bucket_name = 'mgr.users.data'
+    timestamp = datetime.now().strftime('%Y-%m-%dT%H-%M-%S')
+    s3_name = data['file_name'].split('.')[0] + timestamp
+    s3_name = s3_name.replace(' ', '_')
+    s3_name = data['user_id'] + '/' + s3_name
+
+    post_url = create_presigned_post('mgr.users.data', s3_name)
+    print(post_url)
+    return Response.jsonResponse(post_url)
 
 # include this for local dev
 

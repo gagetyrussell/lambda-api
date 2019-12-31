@@ -20,12 +20,14 @@ cognitoUserToRDS: |
   INSERT INTO metadb.cognitoUsers (
     email,
     email_verified,
+    datestamp,
     user_pool_id,
     user_id
   )
   VALUES (
   '{{ email }}',
   '{{ email_verified }}',
+  '{{ datestamp }}',
   '{{ user_pool_id }}',
   '{{ user_id }}'
   )
